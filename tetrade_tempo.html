@@ -66,6 +66,11 @@
         height: auto; 
         margin-bottom: 0;          
     }
+
+   
+    .brand-header {
+        text-align: center;
+    }
     
     .brand-header h1 { 
         font-weight: 800; 
@@ -373,7 +378,7 @@
             <strong>Instruções:</strong>
             <ul>
                 <li>O teste contém 40 perguntas.</li>
-                <li>Para cada afirmação, indique a frequência que ela ocorre na sua rotina atual.</li>
+                <li>Para cada afirmação, indique a frequência em que ela ocorre na sua rotina atual.</li>
                 <li>Seja honesto(a) para obter um diagnóstico preciso.</li>
             </ul>
         </div>
@@ -668,7 +673,7 @@
         
     
         const greetingDiv = document.getElementById('greeting-area');
-        greetingDiv.innerHTML = `Olá,  <span style="color: var(--accent)">${userName}</span>!Este é o resultado da sua Tétrade do Tempo`;
+        greetingDiv.innerHTML = `Olá,  <span style="color: var(--accent)">${userName}</span>! Este é o resultado da sua Tétrade do Tempo.`;
         
         const container = document.getElementById('bars-container');
         const printContainer = document.getElementById('print-only-container');
