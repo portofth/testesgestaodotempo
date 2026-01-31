@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daniela Theodoro | Matriz Tétrade do Tempo</title>
+    <style>
+    /* =========================================
+       ESTILOS GERAIS (TELA)
+       ========================================= */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+    :root {
+        --primary: #1a1a1a;
+        --accent: #8e44ad; /* Roxo Principal */
+        --accent-light: #f4ecf7;
+        --bg: #f8fafb;
+        --card-shadow: 0 30px 60px rgba(0,0,0,0.12);
+        --traffic-green: #27ae60;
+        --traffic-yellow: #f1c40f;
+        --traffic-red: #c0392b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg);
+        color: var(--primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        
+        /* ZOOM DE 80% NA TELA */
+        zoom: 0.8; 
+        -moz-transform: scale(0.8);
+        -moz-transform-origin: top center;
+    }
+
+    #quiz-container {
+        width: 100%;
+        max-width: 1300px;
+        background: #ffffff;
+        padding: 40px 60px;
+        border-radius: 32px;
+        box-shadow: var(--card-shadow);
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* --- HEADER (LOGO E TÍTULO) --- */
+    .header-section { 
+        display: flex;             
+        align-items: center;       
+        justify-content: center;   
+        gap: 30px;                 
+        margin-bottom: 40px; 
+        text-align: left;          
+    }
+
+    .logo-img { 
+        max-width: 220px;          
+        height: auto; 
+        margin-bottom: 0;          
+    }
+    
+    .brand-header h1 { 
+        font-weight: 800; 
+        font-size: 2.2rem; 
+        margin: 0; 
+        letter-spacing: -1px; 
+        text-transform: uppercase; 
+        color: var(--accent); 
+        line-height: 1.1;
+    }
+    
+    .brand-subtitle { 
+        font-size: 1.1rem; 
+        color: #8e44ad; 
+        letter-spacing: 1px; 
+        font-weight: 600; 
+        display: block; 
+        margin-top: 5px; 
+    }
+
+    
+    #intro-screen { text-align: center; max-width: 900px; margin: 0 auto; padding: 20px 0; }
+    
+    .input-group {
+        margin-bottom: 30px;
+        text-align: left;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .input-label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--accent);
+        font-size: 1.2rem;
+    }
+
+    .name-input {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.2rem;
+        border: 2px solid #ddd;
+        border-radius: 12px;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .name-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px var(--accent-light);
+    }
+
+    .intro-text { 
+        font-size: 1.3rem; line-height: 1.6; color: #444; 
+        margin-bottom: 30px; text-align: left; background: #f9f9f9; 
+        padding: 30px; border-radius: 20px; 
+    }
+    
+    .btn-start { 
+        background: var(--accent); color: white; padding: 20px 50px; 
+        font-size: 1.4rem; border: none; border-radius: 50px; cursor: pointer; 
+        transition: 0.3s; font-weight: 800; 
+    }
+    .btn-start:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(142, 68, 173, 0.3); }
+
+    /* UI do Quiz  */
+    #quiz-ui { display: none; max-width: 900px; margin: 0 auto; width: 100%; }
+    .progress-container { margin: 10px 0 30px 0; }
+    .progress-label { display: block; text-align: right; font-size: 1rem; font-weight: 700; color: #aaa; margin-bottom: 8px; }
+    .progress-wrapper { background: #f0f0f0; height: 12px; border-radius: 10px; overflow: hidden; }
+    #progress-fill { background: var(--accent); height: 100%; width: 0%; transition: width 0.3s ease; }
+    .question-text { font-size: 2rem; font-weight: 600; line-height: 1.3; margin-bottom: 40px; text-align: center; min-height: 80px; }
+    
+    .options-area { display: grid; gap: 15px; max-width: 600px; margin: 0 auto; width: 100%; }
+    .btn-option { 
+        background: white; border: 2px solid #eee; padding: 18px; font-size: 1.2rem; 
+        border-radius: 16px; cursor: pointer; transition: 0.2s; font-weight: 600; color: #555; 
+    }
+    .btn-option:hover { border-color: var(--accent); color: var(--accent); background: #fcf6ff; transform: translateY(-3px); }
+
+    /* Layout dos Resultados  */
+    #results-summary { display: none; margin-top: 10px; }
+
+    .user-greeting {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 30px;
+        text-align: center;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 20px;
+    }
+    
+    .res-grid {
+        display: grid;
+        grid-template-columns: 0.9fr 2fr;
+        gap: 40px; 
+        align-items: start;
+    }
+
+    .res-sidebar { background: #fff; padding-right: 20px; border-right: 1px solid #eee; }
+    .res-sidebar h3 { font-size: 1.4rem; color: #333; margin-bottom: 20px; margin-top: 0; }
+    
+    .tetrade-bar-container { margin-bottom: 20px; }
+    .tetrade-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: 700; font-size: 1rem; color: #333; }
+    .bar-bg { background: #eee; height: 14px; border-radius: 8px; overflow: hidden; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .bar-fill { height: 100%; transition: width 1s ease; border-radius: 8px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    .res-main-content { background: #f8fafb; padding: 35px; border-radius: 24px; position: relative; }
+    .results-super-title { display: block; font-size: 1rem; font-weight: 800; color: #aaa; letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; }
+    
+    .detail-title { 
+        font-size: 2.4rem; 
+        font-weight: 800; 
+        margin-bottom: 15px; 
+        color: var(--accent); 
+        line-height: 1.1; 
+    }
+    
+    .detail-badge { display: inline-block; padding: 10px 20px; border-radius: 40px; color: white; font-weight: 700; font-size: 1.1rem; margin-bottom: 20px; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    
+    .detail-text h3 { font-size: 1.6rem; margin-top: 25px; color: #222; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-bottom: 10px; }
+    
+    .detail-text p, .detail-text li { 
+        line-height: 1.6; 
+        color: #333; 
+        font-size: 1.4rem; 
+        margin-bottom: 12px; 
+    }
+    
+    .detail-text ul { padding-left: 20px; margin-bottom: 15px; }
+
+    .nav-buttons { display: flex; justify-content: space-between; margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px; }
+    .btn-nav { padding: 12px 25px; border-radius: 10px; border: none; background: white; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s; color: #555; }
+    .btn-nav:hover { background: var(--accent); color: white; }
+    .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; background: #eee; color: #999; }
+    #nav-indicator { font-size: 1.1rem; align-self: center; color: #999; font-weight: 700; }
+
+    .action-buttons { margin-top: 25px; display: flex; gap: 12px; flex-direction: column; }
+    .btn-print { width: 100%; padding: 16px; background: var(--accent); border: none; border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 1.1rem; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-print:hover { background: #732d91; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3); }
+    .btn-restart-small { width: 100%; padding: 14px; background: #eee; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; color: #666; transition: 0.2s; }
+    .btn-restart-small:hover { background: #ddd; color: #333; }
+
+    .footer-container { grid-column: 1 / -1; margin-top: 15px; }
+    .final-quote { padding: 25px; background: var(--accent-light); border-left: 8px solid var(--accent); border-radius: 12px; text-align: center; color: #333; margin-bottom: 15px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .quote-text { font-style: italic; font-weight: 600; font-size: 1.25rem; line-height: 1.5; display: block; }
+    .signature-block { text-align: center; }
+    .quote-author { font-weight: 800; font-size: 1.1rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; display: block; }
+    .quote-site { font-weight: 400; font-size: 1rem; color: #666; margin-top: 4px; display: block; text-decoration: none; }
+
+    #print-only-container { display: none; }
+    .bg-green { background-color: var(--traffic-green) !important; }
+    .bg-yellow { background-color: var(--traffic-yellow) !important; }
+    .bg-red { background-color: var(--traffic-red) !important; }
+
+    /* Mídia para Celular */
+    @media (max-width: 900px) {
+        #quiz-container { padding: 25px; border-radius: 20px; }
+        .res-grid { grid-template-columns: 1fr; gap: 30px; }
+        .res-sidebar { border-right: none; padding-right: 0; border-bottom: 1px solid #eee; padding-bottom: 25px; }
+        
+        /* No celular, volta a empilhar logo e texto */
+        .header-section { flex-direction: column; text-align: center; gap: 15px; }
+    }
+
+   /*Impressão */
+    @media print {
+        @page { margin: 0; size: auto; }
+        
+        body { 
+            background: white; 
+            margin: 0; 
+            padding: 2cm; 
+            color: #000;
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact;
+            zoom: 1 !important; 
+            -moz-transform: none !important;
+        }
+
+        #quiz-container, .res-grid { 
+            display: block !important; 
+            width: 100% !important; 
+            border: none !important; 
+            box-shadow: none !important; 
+            padding: 0 !important; 
+            margin: 0 !important;
+            overflow: visible !important;
+        }
+
+        
+        .header-section { 
+            display: flex !important;
+            margin-bottom: 30px !important;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+        
+        
+        #intro-screen, 
+        #quiz-ui, 
+        .nav-buttons, 
+        .action-buttons, 
+        .btn-start, 
+        .results-super-title, 
+        .res-main-content { 
+            display: none !important; 
+        }
+        
+        #results-summary { display: block !important; margin: 0 !important; }
+        
+        
+        .user-greeting {
+            display: block !important;
+            text-align: left !important;
+            font-size: 1.5rem !important;
+            margin-bottom: 20px !important;
+            border: none !important;
+        }
+
+        .res-sidebar { 
+            display: block !important;
+            width: 100% !important; 
+            border: none !important; 
+            padding: 0 !important; 
+            margin-bottom: 15px !important;
+            border-bottom: 2px solid #ccc !important;
+            padding-bottom: 10px !important;
+            break-inside: avoid;
+        }
+
+        #print-only-container { display: block !important; margin-top: 0 !important; }
+
+        .print-detail-block {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+            display: block !important; 
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+            position: relative;
+        }
+        
+        .print-title { 
+            font-size: 1.6rem; 
+            font-weight: 800; 
+            color: var(--accent); 
+            margin-bottom: 5px; 
+            page-break-after: avoid; 
+        }
+
+        .print-badge { 
+            font-weight: 700; 
+            font-size: 1rem; 
+            text-transform: uppercase; 
+            margin-bottom: 10px; 
+            display: inline-block !important; 
+            padding: 5px 15px; 
+            border-radius: 20px; 
+            color: white !important; 
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact; 
+            page-break-after: avoid; 
+        }
+        
+        .print-text { 
+            font-size: 13pt; 
+            line-height: 1.5; 
+            color: #000; 
+            text-align: justify; 
+        }
+        
+        .footer-container { 
+            margin-top: 30px; 
+            break-inside: avoid; 
+            page-break-inside: avoid; 
+        }
+        
+        .final-quote { 
+            border: 2px solid var(--accent); 
+            background: #fff !important; 
+            color: #000; 
+            padding: 15px; 
+        }
+    }
+</style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div class="header-section">
+        <img src="logo.jpeg" alt="Daniela Theodoro" class="logo-img" onerror="this.style.display='none'">
+        <div class="brand-header">
+            <h1>Matriz Tétrade do Tempo</h1>
+            <span class="brand-subtitle">Vida Pessoal e Profissional</span>
+        </div>
+    </div>
+
+    <div id="intro-screen">
+        <div class="intro-text">
+            <strong>Objetivo:</strong> Avaliar como você distribui seu tempo e energia entre quatro tipos de atividades, identificando padrões de produtividade, desperdício de tempo e oportunidades de melhoria.<br><br>
+            <strong>Instruções:</strong>
+            <ul>
+                <li>O teste contém 40 perguntas.</li>
+                <li>Para cada afirmação, indique a frequência que ela ocorre na sua rotina atual.</li>
+                <li>Seja honesto(a) para obter um diagnóstico preciso.</li>
+            </ul>
+        </div>
+        
+        <div class="input-group">
+            <label class="input-label" for="user-name">Como você gostaria de ser chamado(a)?</label>
+            <input type="text" id="user-name" class="name-input" placeholder="Digite seu nome aqui...">
+        </div>
+
+        <button class="btn-start" onclick="startQuiz()">COMEÇAR AVALIAÇÃO</button>
+    </div>
+
+    <div id="quiz-ui">
+        <div class="progress-container">
+            <span class="progress-label" id="progress-text">Questão 1 de 40</span>
+            <div class="progress-wrapper"><div id="progress-fill"></div></div>
+        </div>
+        <div class="question-text" id="q-text">Carregando pergunta...</div>
+        <div class="options-area">
+            <button class="btn-option" onclick="handleAnswer(0)">Nunca</button>
+            <button class="btn-option" onclick="handleAnswer(2.5)">Raramente</button>
+            <button class="btn-option" onclick="handleAnswer(5)">Às vezes</button>
+            <button class="btn-option" onclick="handleAnswer(7.5)">Frequentemente</button>
+            <button class="btn-option" onclick="handleAnswer(10)">Sempre</button>
+        </div>
+    </div>
+
+    <div id="results-summary">
+        <div id="greeting-area" class="user-greeting"></div>
+
+        <div class="res-grid">
+            <div class="res-sidebar">
+                <h3>Seu Mapa do Tempo</h3>
+                <div id="bars-container">
+                    </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-print" onclick="window.print()">🖨️ IMPRIMIR RESULTADO</button>
+                    <button class="btn-restart-small" onclick="location.reload()">REFAZER TESTE</button>
+                </div>
+            </div>
+
+            <div class="res-main-content">
+                <span class="results-super-title">RESULTADOS DETALHADOS</span>
+                <div id="detail-card-content">
+                    </div>
+                
+                <div class="nav-buttons">
+                    <button class="btn-nav" id="btn-prev" onclick="changeDetail(-1)">&#8592; Anterior</button>
+                    <span id="nav-indicator">1/4</span>
+                    <button class="btn-nav" id="btn-next" onclick="changeDetail(1)">Próximo &#8594;</button>
+                </div>
+            </div>
+
+            <div id="print-only-container">
+                </div>
+
+            <div class="footer-container">
+                <div class="final-quote">
+                    <span class="quote-text">“Consciência é o primeiro passo da mudança. A partir de agora, cada pequena escolha sua pode reprogramar a forma como você usa o tempo — e vive a vida.”</span>
+                </div>
+                <div class="signature-block">
+                    <span class="quote-author">Daniela Theodoro</span>
+                    <a href="http://www.cursosdanielatheodoro.com" class="quote-site" target="_blank">www.cursosdanielatheodoro.com</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- VARIÁVEL GLOBAL PARA O NOME ---
+    let userName = "";
+
+    const categoriesData = {
+        importante: {
+            id: 'importante', 
+            title: "Atividades Importantes",
+            questions: [
+                "Planejo minha semana antes de iniciá-la.", 
+                "Dedico tempo regular ao meu desenvolvimento pessoal ou profissional (cursos, leituras, estudos).", 
+                "Cuido da minha saúde física e mental de forma intencional (sono, alimentação, atividade física).", 
+                "Reservo tempo de qualidade para minha família ou pessoas importantes.", 
+                "Realizo atividades alinhadas aos meus valores e objetivos de vida.", 
+                "Tenho momentos dedicados ao autoconhecimento (reflexão, terapia, espiritualidade ou escrita).", 
+                "Organizo minhas finanças e acompanho meus gastos e investimentos.", 
+                "Invisto tempo em atividades que constroem meu futuro, mesmo sem retorno imediato.", 
+                "Tenho clareza das minhas prioridades antes de aceitar novos compromissos.", 
+                "Faço escolhas conscientes sobre como uso meu tempo e minha energia."
+            ],
+            logic: "positive", 
+            feedback: {
+                high: { 
+                    title: "ALTA PONTUAÇÃO", 
+                    text: `<strong>O que isso revela:</strong> Parabéns! Você direciona seu tempo para aquilo que realmente gera valor, resultados e crescimento. Suas escolhas são mais conscientes, estratégicas e alinhadas aos seus objetivos. Esse padrão indica protagonismo, visão de futuro e maturidade na gestão do tempo.<br><br>
+                    <strong>Impactos positivos:</strong><br>• Maior sensação de controle e clareza mental<br>• Resultados consistentes no médio e longo prazo<br>• Menor dependência de pressão externa<br>• Mais equilíbrio entre vida pessoal e profissional<br><br>
+                    <strong>Atenção:</strong> Cuidado apenas para não se sobrecarregar, assumindo responsabilidades demais por ser alguém protagonista, organizado(a) e confiável.` 
+                },
+                mid: { 
+                    title: "PONTUAÇÃO MÉDIA", 
+                    text: `<strong>O que isso revela:</strong> Muito bom! Você está no caminho certo! Reconhece a importância de planejar, cuidar de si e investir em crescimento. Entretanto, ainda não faz isso com a consistência necessária. As atividades importantes disputam espaço com urgências e interrupções.<br><br>
+                    <strong>Padrão típico:</strong><br>• Planeja, mas nem sempre executa.<br>• Cuida de si em alguns períodos, mas abandona em fases corridas.<br><br>
+                    <strong>Recomendação:</strong> O foco agora é adicionar novas atividades importantes, proteger as que já existem e melhorar a consistência. Crie horários fixos e duração mínima. Consistência vale mais do que intensidade.` 
+                },
+                low: { 
+                    title: "BAIXA PONTUAÇÃO", 
+                    text: `<strong>O que isso revela:</strong> Você precisa de alguns reajustes na sua rotina. Atividades importantes estão ficando em segundo plano e você pode estar vivendo mais no “modo reação” do que no “modo intenção”. Isso geralmente é falta de espaço mental e agenda protegida.<br><br>
+                    <strong>Impactos comuns:</strong><br>• Sensação de estar sempre ocupado(a), mas pouco produtivo(a).<br>• Frustração e estagnação.<br><br>
+                    <strong>Recomendação:</strong> Comece pequeno: reserve 15 a 30 minutos diários para uma atividade importante. O foco aqui é consistência, não volume.` 
+                }
+            }
+        },
+        urgente: {
+            id: 'urgente', 
+            title: "Atividades Urgentes",
+            questions: [
+                "Costumo lidar com demandas de última hora com frequência.", 
+                "Sinto que estou sempre correndo contra o tempo.", 
+                "Resolvo problemas que poderiam ter sido evitados com planejamento.", 
+                "Deixo atividades importantes para depois por causa de urgências.", 
+                "Atendo às prioridades dos outros antes das minhas.", 
+                "Trabalho ou resolvo questões sob constante pressão.", 
+                "Tomo decisões rápidas sem tempo para refletir.", 
+                "Sinto ansiedade quando há muitos prazos ou cobranças simultâneas.", 
+                "Meu dia costuma ser guiado por imprevistos.", 
+                "Tenho dificuldade de cumprir prazos sem sentir estresse."
+            ],
+            logic: "negative", 
+            feedback: {
+                high: { 
+                    title: "ALTA PONTUAÇÃO", 
+                    text: `<strong>O que isso revela:</strong> Atenção! Sua rotina é fortemente guiada por prazos, cobranças e demandas externas. Você provavelmente é eficiente e ágil, mas vive sob pressão constante.<br><br>
+                    <strong>Riscos associados:</strong><br>• Estresse crônico.<br>• Sensação de "apagador(a) de incêndios".<br>• Exaustão emocional.<br><br>
+                    <strong>Recomendação:</strong> Transforme urgências recorrentes em atividades importantes planejadas. Pergunte-se: “Por que isso virou urgente?”` 
+                },
+                mid: { 
+                    title: "PONTUAÇÃO MÉDIA", 
+                    text: `<strong>O que isso revela:</strong> Sua rotina alterna entre momentos de planejamento e períodos de reação. Você não vive exclusivamente apagando incêndios, mas ainda permite que urgências ocupem mais espaço do que deveriam.<br><br>
+                    <strong>Impactos:</strong><br>• Estresse moderado, porém frequente.<br>• Energia mental consumida por ajustes de última hora.<br><br>
+                    <strong>Recomendação:</strong> Identifique urgências repetidas e transforme-as em atividades planejadas. Pequenas antecipações já reduzem a pressão mental.` 
+                },
+                low: { 
+                    title: "BAIXA PONTUAÇÃO", 
+                    text: `<strong>O que isso revela:</strong> Parabéns! Você consegue antecipar demandas e evitar pressão excessiva. Seu planejamento reduz imprevistos e melhora a fluidez da rotina.<br><br>
+                    <strong>Impactos positivos:</strong><br>• Mais tranquilidade no dia a dia.<br>• Melhor qualidade de decisão.<br>• Menos desgaste emocional.<br><br>
+                    <strong>Recomendação:</strong> Mantenha revisões periódicas e monitoramento de prazos.` 
+                }
+            }
+        },
+        interruptivo: {
+            id: 'interruptivo', 
+            title: "Atividades Interruptivas",
+            questions: [
+                "Sou interrompido(a) frequentemente por colegas ou mensagens, ligações e notificações.", 
+                "Interrompo tarefas importantes para checar o celular ou redes sociais.", 
+                "Tenho dificuldade de manter foco em uma única atividade por muito tempo.", 
+                "Respondo mensagens imediatamente, mesmo quando estou concentrado(a).", 
+                "Sou facilmente distraído(a) por estímulos externos.", 
+                "Costumo alternar entre tarefas sem concluir nenhuma totalmente.", 
+                "Permito interrupções mesmo quando tenho prazos importantes.", 
+                "Sinto cansaço mental ao final do dia, mesmo sem grandes entregas.", 
+                "Meu ambiente favorece distrações constantes.", 
+                "Tenho dificuldade de estabelecer limites para interrupções."
+            ],
+            logic: "negative",
+            feedback: {
+                high: { 
+                    title: "ALTA PONTUAÇÃO", 
+                    text: `<strong>O que isso revela:</strong> Seu foco é constantemente interrompido. Isso não significa falta de disciplina, mas sim ambientes, hábitos e limites mal definidos.<br><br>
+                    <strong>Causa principal:</strong> O cérebro leva, em média, de 10 a 23 minutos para retomar o foco após uma interrupção.<br><br>
+                    <strong>Recomendação:</strong> Implemente acordos de interrupção: silenciar notificações, horários de foco e comunicação clara com pessoas-chave.` 
+                },
+                mid: { 
+                    title: "PONTUAÇÃO MÉDIA", 
+                    text: `<strong>O que isso revela:</strong> Você tem alguma consciência sobre a importância do foco, mas ainda cede a interrupções em momentos críticos. Seu cérebro alterna entre atenção concentrada e busca por estímulos rápidos.<br><br>
+                    <strong>Impactos:</strong><br>• Execução fragmentada.<br>• Cansaço desproporcional aos resultados.<br><br>
+                    <strong>Recomendação:</strong> Em vez de tentar eliminar todas as interrupções, comece criando blocos curtos e protegidos de foco. Treinar o cérebro é gradual.` 
+                },
+                low: { 
+                    title: "BAIXA PONTUAÇÃO", 
+                    text: `<strong>O que isso revela:</strong> Você protege seu foco e gerencia bem interrupções. Isso indica boa consciência atencional e respeito ao próprio tempo.<br><br>
+                    <strong>Impactos positivos:</strong><br>• Maior profundidade no trabalho.<br>• Menos fadiga mental.<br><br>
+                    <strong>Recomendação:</strong> Continue reforçando esses limites e ajude outras pessoas a respeitarem seus momentos de concentração.` 
+                }
+            }
+        },
+        circunstancial: {
+            id: 'circunstancial', 
+            title: "Atividades Circunstanciais",
+            questions: [
+                "Realizo tarefas por hábito, sem refletir sobre sua importância/prioridade.", 
+                "Passo tempo excessivo em redes sociais ou entretenimento sem intenção clara.", 
+                "Participo de compromissos que não exigem minha presença.", 
+                "Prolongo atividades simples (café, banheiro) mais do que o necessário.", 
+                "Uso o tempo livre sem planejamento ou propósito.", 
+                "Adio decisões importantes, ocupando-me com tarefas menores.", 
+                "Faço coisas para “preencher o tempo”.", 
+                "Deixo de lado momentos de lazer planejado e acabo usando distrações automáticas.", 
+                "Repito rotinas que não contribuem para meu bem-estar ou crescimento.", 
+                "Tenho dificuldade de perceber para onde meu tempo realmente está indo."
+            ],
+            logic: "negative",
+            feedback: {
+                high: { 
+                    title: "ALTA PONTUAÇÃO", 
+                    text: `<strong>O que isso revela:</strong> Uma parte relevante do seu tempo está sendo consumida por atividades automáticas, sem valor estratégico. Elas dão sensação de ocupação, mas não de realização.<br><br>
+                    <strong>Impactos:</strong><br>• Perda de tempo e energia.<br>• Procrastinação disfarçada e culpa.<br><br>
+                    <strong>Recomendação:</strong> Faça uma limpeza de agenda. Pergunte-se: “Se eu parar de fazer isso, o que realmente acontece?”` 
+                },
+                mid: { 
+                    title: "PONTUAÇÃO MÉDIA", 
+                    text: `<strong>O que isso revela:</strong> Você já eliminou parte dos desperdícios, mas ainda mantém atividades automáticas que drenam energia, principalmente em momentos de cansaço ou indecisão.<br><br>
+                    <strong>Impactos:</strong><br>• Sensação de tempo “escorrendo pelos dedos”.<br>• Culpa leve, porém recorrente.<br><br>
+                    <strong>Recomendação:</strong> Trabalhe com substituição consciente. Transforme atividades circunstanciais em pausas planejadas, descanso real ou lazer de qualidade.` 
+                },
+                low: { 
+                    title: "BAIXA PONTUAÇÃO", 
+                    text: `<strong>O que isso revela:</strong> Parabéns! Você usa seu tempo com intenção. Evita desperdícios e escolhe melhor onde investe sua energia.<br><br>
+                    <strong>Impactos positivos:</strong><br>• Mais tempo para o que importa.<br>• Rotina mais leve e com propósito.<br><br>
+                    <strong>Recomendação:</strong> Mantenha esse padrão com revisões semanais e atenção aos “ladrões de tempo” que surgem aos poucos.` 
+                }
+            }
+        }
+    };
+
+    // --- VARIÁVEIS DE ESTADO ---
+    let fullQuestionList = [];
+    let currentQuestionIndex = 0;
+    let scores = { importante: 0, urgente: 0, interruptivo: 0, circunstancial: 0 };
+    let resultsArray = [];
+    let currentDetailIndex = 0;
+
+    // --- FUNÇÕES DO QUIZ ---
+
+    function startQuiz() {
+        // Validação do Nome
+        const nameInput = document.getElementById('user-name');
+        const name = nameInput.value.trim();
+        
+        if (name === "") {
+            alert("Por favor, digite seu nome para começar.");
+            nameInput.focus();
+            return;
+        }
+
+        // Salva o nome e esconde a intro
+        userName = name;
+        
+        document.getElementById('intro-screen').style.display = 'none';
+        document.getElementById('quiz-ui').style.display = 'block';
+        
+        let tempList = [];
+        for (let catKey in categoriesData) {
+            categoriesData[catKey].questions.forEach(q => {
+                tempList.push({ category: catKey, text: q });
+            });
+        }
+        fullQuestionList = shuffle(tempList);
+        renderQuestion();
+    }
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function renderQuestion() {
+        const q = fullQuestionList[currentQuestionIndex];
+        document.getElementById('q-text').innerText = q.text;
+        const pct = ((currentQuestionIndex) / fullQuestionList.length) * 100;
+        document.getElementById('progress-fill').style.width = pct + "%";
+        document.getElementById('progress-text').innerText = `Questão ${currentQuestionIndex + 1} de ${fullQuestionList.length}`;
+    }
+
+    function handleAnswer(points) {
+        const q = fullQuestionList[currentQuestionIndex];
+        scores[q.category] += points;
+        currentQuestionIndex++;
+        if (currentQuestionIndex < fullQuestionList.length) {
+            renderQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function finishQuiz() {
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('results-summary').style.display = 'block';
+        
+    
+        const greetingDiv = document.getElementById('greeting-area');
+        greetingDiv.innerHTML = `Olá,  <span style="color: var(--accent)">${userName}</span>!Este é o resultado da sua Tétrade do Tempo`;
+        
+        const container = document.getElementById('bars-container');
+        const printContainer = document.getElementById('print-only-container');
+        
+        container.innerHTML = '';
+        printContainer.innerHTML = '';
+        
+        const order = ['importante', 'urgente', 'interruptivo', 'circunstancial'];
+        
+        resultsArray = []; 
+
+        order.forEach(key => {
+            const cat = categoriesData[key];
+            const score = Math.round(scores[key]);
+            
+            let colorClass = '';
+            let status = '';
+
+            if (cat.logic === 'positive') {
+                if (score > 69) { colorClass = 'bg-green'; status = 'high'; }
+                else if (score >= 50) { colorClass = 'bg-yellow'; status = 'mid'; }
+                else { colorClass = 'bg-red'; status = 'low'; }
+            } else {
+                if (score > 49) { colorClass = 'bg-red'; status = 'high'; }
+                else if (score >= 30) { colorClass = 'bg-yellow'; status = 'mid'; }
+                else { colorClass = 'bg-green'; status = 'low'; }
+            }
+
+            // Barra lateral para visualização em tela
+            container.innerHTML += `
+                <div class="tetrade-bar-container">
+                    <div class="tetrade-header">
+                        <span>${cat.title}</span>
+                        <span>${score}%</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill ${colorClass}" style="width: ${score}%"></div>
+                    </div>
+                </div>
+            `;
+
+            const resultObj = {
+                key: key,
+                title: cat.title,
+                score: score,
+                colorClass: colorClass,
+                feedbackData: cat.feedback[status]
+            };
+
+            // Guarda para a visualização de tela
+            resultsArray.push(resultObj);
+
+            // GERA O CONTEÚDO DE IMPRESSÃO 
+            printContainer.innerHTML += `
+                <div class="print-detail-block">
+                    <div class="print-title">${resultObj.title}</div>
+                    <div class="print-badge ${colorClass}" style="color:${colorClass === 'bg-yellow' ? '#333' : 'white'} !important">${resultObj.feedbackData.title} (${score} pontos)</div>
+                    <div class="print-text">
+                        ${resultObj.feedbackData.text}
+                    </div>
+                </div>
+            `;
+        });
+
+        // Mostra o primeiro resultado na tela
+        renderDetailCard(0);
+    }
+
+    // --- NAVEGAÇÃO DOS DETALHES ---
+
+    function changeDetail(direction) {
+        let newIndex = currentDetailIndex + direction;
+        if (newIndex >= 0 && newIndex < resultsArray.length) {
+            renderDetailCard(newIndex);
+        }
+    }
+
+    function renderDetailCard(index) {
+        currentDetailIndex = index;
+        const data = resultsArray[index];
+        const container = document.getElementById('detail-card-content');
+        
+        document.getElementById('btn-prev').disabled = (index === 0);
+        document.getElementById('btn-next').disabled = (index === resultsArray.length - 1);
+        document.getElementById('nav-indicator').innerText = `${index + 1}/${resultsArray.length}`;
+
+        container.innerHTML = `
+            <div class="detail-title">${data.title}</div>
+            <div class="detail-badge ${data.colorClass}">${data.feedbackData.title} (${data.score} pontos)</div>
+            <div class="detail-text">
+                ${data.feedbackData.text}
+            </div>
+        `;
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daniela Theodoro | Teste de Cronotipo</title>
+    <style>
+    /* =========================================
+       ESTILOS GERAIS (Baseados no Tetrade)
+       ========================================= */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+    :root {
+        --primary: #1a1a1a;
+        --accent: #8e44ad; /* Roxo da Identidade Visual */
+        --accent-light: #f4ecf7;
+        --bg: #f8fafb;
+        --card-shadow: 0 30px 60px rgba(0,0,0,0.12);
+        
+        /* Cores dos Animais */
+        --lion: #c9a441;
+        --bear: #8b4513;
+        --wolf: #708090;
+        --dolphin: #008b8b;
+        
+        --true-green: #27ae60;
+        --false-red: #c0392b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg);
+        color: var(--primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        
+        /* Otimização de espaço */
+        zoom: 0.8; 
+        -moz-transform: scale(0.8);
+        -moz-transform-origin: top center;
+    }
+
+    #quiz-container {
+        width: 100%;
+        max-width: 1300px;
+        background: #ffffff;
+        padding: 40px 60px;
+        border-radius: 32px;
+        box-shadow: var(--card-shadow);
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* --- HEADER --- */
+    .header-section { 
+        display: flex;             
+        align-items: center;       
+        justify-content: center;   
+        gap: 30px;                 
+        margin-bottom: 40px; 
+        text-align: left;          
+    }
+
+    .logo-img { max-width: 220px; height: auto; margin-bottom: 0; }
+    
+    .brand-header h1 { 
+        font-weight: 800; font-size: 2.2rem; margin: 0; 
+        letter-spacing: -1px; text-transform: uppercase; 
+        color: var(--accent); line-height: 1.1;
+    }
+    
+   .brand-subtitle { 
+    font-size: 1.1rem; 
+    color: var(--accent);  
+    letter-spacing: 1px; 
+    font-weight: 600; 
+    display: block; 
+    margin-top: 5px; 
+}
+
+    
+    #intro-screen { text-align: center; max-width: 900px; margin: 0 auto; padding: 20px 0; }
+    
+    .input-group {
+        margin-bottom: 30px;
+        text-align: left;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .input-label {
+        display: block; font-weight: 700; margin-bottom: 10px; 
+        color: var(--accent); font-size: 1.2rem;
+    }
+
+    .name-input {
+        width: 100%; padding: 15px; font-size: 1.2rem; 
+        border: 2px solid #ddd; border-radius: 12px; 
+        outline: none; transition: 0.3s;
+    }
+
+    .name-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-light); }
+
+    .intro-text { 
+        font-size: 1.3rem; line-height: 1.6; color: #444; 
+        margin-bottom: 30px; text-align: left; background: #f9f9f9; 
+        padding: 30px; border-radius: 20px; 
+    }
+    
+    .btn-start { 
+        background: var(--accent); color: white; padding: 20px 50px; 
+        font-size: 1.4rem; border: none; border-radius: 50px; cursor: pointer; 
+        transition: 0.3s; font-weight: 800; 
+    }
+    .btn-start:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(142, 68, 173, 0.3); }
+
+    /* UI do QUIZ */
+    #quiz-ui { display: none; max-width: 900px; margin: 0 auto; width: 100%; }
+    
+    .progress-container { margin: 10px 0 30px 0; }
+    .progress-label { display: block; text-align: right; font-size: 1rem; font-weight: 700; color: #aaa; margin-bottom: 8px; }
+    .progress-wrapper { background: #f0f0f0; height: 12px; border-radius: 10px; overflow: hidden; }
+    #progress-fill { background: var(--accent); height: 100%; width: 0%; transition: width 0.3s ease; }
+    
+    .question-text { font-size: 2rem; font-weight: 600; line-height: 1.3; margin-bottom: 40px; text-align: center; min-height: 80px; }
+    
+    .options-area { display: grid; gap: 15px; max-width: 600px; margin: 0 auto; width: 100%; }
+    
+    .btn-option { 
+        background: white; border: 2px solid #eee; padding: 18px; font-size: 1.2rem; 
+        border-radius: 16px; cursor: pointer; transition: 0.2s; font-weight: 600; color: #555; 
+        text-align: left;
+    }
+    .btn-option:hover { border-color: var(--accent); color: var(--accent); background: #fcf6ff; transform: translateY(-3px); }
+    
+    /* Botões Fase 1 (V/F) */
+    .btn-true { background: var(--true-green); color: white; text-align: center; border: none; }
+    .btn-true:hover { background: #219150; color: white; }
+    .btn-false { background: var(--false-red); color: white; text-align: center; border: none; }
+    .btn-false:hover { background: #a93226; color: white; }
+
+    /*  RESULTADOS  */
+    #results-summary { display: none; margin-top: 10px; }
+
+    .user-greeting {
+        font-size: 1.8rem; font-weight: 800; color: var(--primary);
+        margin-bottom: 30px; text-align: center; border-bottom: 2px solid #eee;
+        padding-bottom: 20px;
+    }
+    
+    .res-grid { display: grid; grid-template-columns: 0.9fr 2fr; gap: 40px; align-items: start; }
+
+    .res-sidebar { background: #fff; padding-right: 20px; border-right: 1px solid #eee; }
+    .res-sidebar h3 { font-size: 1.4rem; color: #333; margin-bottom: 20px; margin-top: 0; }
+    
+    .animal-bar-container { margin-bottom: 20px; }
+    .animal-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: 700; font-size: 1rem; color: #333; }
+    .bar-bg { background: #eee; height: 14px; border-radius: 8px; overflow: hidden; }
+    .bar-fill { height: 100%; transition: width 1s ease; border-radius: 8px; }
+
+    .res-main-content { background: #f8fafb; padding: 35px; border-radius: 24px; position: relative; }
+    
+    .animal-emoji-big { font-size: 4rem; display: block; margin-bottom: 10px; }
+    .detail-title { font-size: 2.8rem; font-weight: 800; margin-bottom: 15px; line-height: 1.1; }
+    
+    .detail-text h3 { font-size: 1.6rem; margin-top: 25px; color: #222; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-bottom: 10px; }
+    .detail-text p, .detail-text li { line-height: 1.6; color: #333; font-size: 1.4rem; margin-bottom: 12px; }
+
+    .action-buttons { margin-top: 25px; display: flex; gap: 12px; flex-direction: column; }
+    .btn-print { width: 100%; padding: 16px; background: var(--accent); border: none; border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 1.1rem; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-print:hover { background: #732d91; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3); }
+    .btn-restart-small { width: 100%; padding: 14px; background: #eee; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; color: #666; transition: 0.2s; }
+    .btn-restart-small:hover { background: #ddd; color: #333; }
+
+    /* FOOTER  */
+    .footer-container { grid-column: 1 / -1; margin-top: 15px; }
+    .final-quote { padding: 25px; background: var(--accent-light); border-left: 8px solid var(--accent); border-radius: 12px; text-align: center; color: #333; margin-bottom: 15px; }
+    .quote-text { font-style: italic; font-weight: 600; font-size: 1.25rem; line-height: 1.5; display: block; }
+    .signature-block { text-align: center; }
+    .quote-author { font-weight: 800; font-size: 1.1rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; display: block; }
+    .quote-site { font-weight: 400; font-size: 1rem; color: #666; margin-top: 4px; display: block; text-decoration: none; }
+
+    #print-only-container { display: none; }
+
+    
+    @media (max-width: 900px) {
+        #quiz-container { padding: 25px; border-radius: 20px; }
+        .res-grid { grid-template-columns: 1fr; gap: 30px; }
+        .res-sidebar { border-right: none; padding-right: 0; border-bottom: 1px solid #eee; padding-bottom: 25px; }
+        .header-section { flex-direction: column; text-align: center; gap: 15px; }
+    }
+
+   
+    @media print {
+        @page { margin: 0; size: auto; }
+        
+        body { 
+            background: white; margin: 0; padding: 2cm; color: #000;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+            zoom: 1 !important; -moz-transform: none !important;
+        }
+
+        #quiz-container, .res-grid { 
+            display: block !important; width: 100% !important; border: none !important; 
+            box-shadow: none !important; padding: 0 !important; margin: 0 !important; overflow: visible !important;
+        }
+
+        .header-section { display: flex !important; margin-bottom: 30px !important; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+        
+        /* Esconder UI interativa */
+        #intro-screen, #quiz-ui, .action-buttons, .btn-start, .res-main-content { display: none !important; }
+        
+        #results-summary { display: block !important; margin: 0 !important; }
+        .user-greeting { display: block !important; text-align: left !important; font-size: 1.5rem !important; margin-bottom: 20px !important; border: none !important; }
+
+        /* Sidebar (Barras) na impressão */
+        .res-sidebar { 
+            display: block !important; width: 100% !important; border: none !important; 
+            padding: 0 !important; margin-bottom: 30px !important; border-bottom: 1px solid #ccc !important;
+            padding-bottom: 20px !important; break-inside: avoid;
+        }
+
+        #print-only-container { display: block !important; margin-top: 0 !important; }
+
+        .print-detail-block {
+            break-inside: avoid !important; page-break-inside: avoid !important;
+            display: block !important; margin-bottom: 20px; padding-bottom: 15px;
+            position: relative;
+        }
+        
+        .print-title { font-size: 2rem; font-weight: 800; margin-bottom: 10px; page-break-after: avoid; }
+        .print-text { font-size: 12pt; line-height: 1.5; color: #000; text-align: justify; }
+        
+        .footer-container { margin-top: 30px; break-inside: avoid; page-break-inside: avoid; }
+        .final-quote { border: 2px solid var(--accent); background: #fff !important; color: #000; padding: 15px; }
+    }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div class="header-section">
+        <img src="logo.jpeg" alt="Logo Daniela Theodoro" class="logo-img" onerror="this.style.display='none'">
+        <div class="brand-header">
+            <h1>Teste de Cronotipo</h1>
+            <span class="brand-subtitle">Método desenvolvido pelo Dr. Michael Breus</span>
+        </div>
+    </div>
+
+    <div id="intro-screen">
+        <div class="intro-text">
+            <strong>Objetivo:</strong> Identificar o seu relógio biológico interno para otimizar sua energia, sono e produtividade.<br><br>
+            <strong>Instruções:</strong>
+            <ul>
+                <li>O teste é dividido em duas fases rápidas.</li>
+                <li><strong>Fase 1:</strong> 10 perguntas de Verdadeiro ou Falso.</li>
+                <li><strong>Fase 2:</strong> 20 perguntas de Múltipla Escolha sobre seus hábitos e preferências.</li>
+            </ul>
+        </div>
+        
+        <div class="input-group">
+            <label class="input-label" for="user-name">Como você gostaria de ser chamado(a)?</label>
+            <input type="text" id="user-name" class="name-input" placeholder="Digite seu nome aqui...">
+        </div>
+
+        <button class="btn-start" onclick="startQuiz()">COMEÇAR AVALIAÇÃO</button>
+    </div>
+
+    <div id="quiz-ui">
+        <div class="progress-container">
+            <span class="progress-label" id="fase-label">Fase 1: Sensibilidade</span>
+            <div class="progress-wrapper"><div id="progress-fill"></div></div>
+        </div>
+        <div class="question-text" id="q-text">Carregando...</div>
+        <div class="options-area" id="options-area"></div>
+    </div>
+
+    <div id="results-summary">
+        <div id="greeting-area" class="user-greeting"></div>
+
+        <div class="res-grid">
+            <div class="res-sidebar">
+                <h3>Sua Distribuição</h3>
+                <div id="stats-area">
+                    </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-print" onclick="window.print()">🖨️ IMPRIMIR RESULTADO</button>
+                    <button class="btn-restart-small" onclick="location.reload()">REFAZER TESTE</button>
+                </div>
+            </div>
+
+            <div class="res-main-content" id="main-result-content">
+                </div>
+            
+            <div id="print-only-container"></div>
+
+            <div class="footer-container">
+                <div class="final-quote">
+                    <span class="quote-text">“Consciência é o primeiro passo da mudança. A partir de agora, cada pequena escolha sua pode reprogramar a forma como você usa o tempo — e vive a vida.”</span>
+                </div>
+                <div class="signature-block">
+                    <span class="quote-author">Daniela Theodoro</span>
+                    <a href="http://www.cursosdanielatheodoro.com" class="quote-site" target="_blank">www.cursosdanielatheodoro.com</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- DADOS DO TESTE ---
+    const perguntasParte1 = [
+        "1. Qualquer barulho ou luz me acorda ou me impede de dormir.",
+        "2. Comer não é um grande prazer para mim.",
+        "3. Costumo acordar antes que meu despertador toque.",
+        "4. Não consigo dormir em aviões, mesmo com máscara e protetores auriculares.",
+        "5. É muito comum ficar irritadiço por cansaço.",
+        "6. Me preocupo demais com detalhes.",
+        "7. Fui diagnosticado por um médico ou já me autodiagnostiquei como insone.",
+        "8. Na escola, eu ficava ansioso com as minhas notas.",
+        "9. Perco o sono remoendo o que aconteceu no passado e o que pode acontecer no futuro.",
+        "10. Sou perfeccionista."
+    ];
+
+    const perguntasParte2 = [
+        {q: "1. Se acordasse no horário que quisesse, seria:", a: ["(a) Antes das 6h30", "(b) Entre 6h30 e 8h45", "(c) Depois das 8h45"], pts:[1,2,3]},
+        {q: "2. Uso de despertador:", a: ["(a) Não preciso", "(b) Sim, sem ou com uma soneca", "(c) Sim, com várias sonecas"], pts:[1,2,3]},
+        {q: "3. Acordar nos fins de semana:", a: ["(a) No mesmo horário", "(b) 45-90 min depois", "(c) 90 min ou mais depois"], pts:[1,2,3]},
+        {q: "4. Lidando com Jet Lag:", a: ["(a) Sofro muito", "(b) Adapto-me em 48h", "(c) Adapto-me rápido"], pts:[1,2,3]},
+        {q: "5. Refeição favorita:", a: ["(a) Café da manhã", "(b) Almoço", "(c) Jantar"], pts:[1,2,3]},
+        {q: "6. Horário ideal para uma prova difícil:", a: ["(a) Manhãzinha", "(b) Começo da tarde", "(c) Meio da tarde"], pts:[1,2,3]},
+        {q: "7. Horário para exercício intenso:", a: ["(a) Antes das 8h", "(b) 8h às 16h", "(c) Depois das 16h"], pts:[1,2,3]},
+        {q: "8. Quando está mais alerta:", a: ["(a) 1-2h após acordar", "(b) 2-4h após acordar", "(c) 4-6h após acordar"], pts:[1,2,3]},
+        {q: "9. Jornada de trabalho de 5h preferida:", a: ["(a) 4h às 9h", "(b) 9h às 14h", "(c) 16h às 21h"], pts:[1,2,3]},
+        {q: "10. Lado do cérebro dominante:", a: ["(a) Esquerdo/Analítico", "(b) Equilibrado", "(c) Direito/Criativo"], pts:[1,2,3]},
+        {q: "11. Sobre cochilos:", a: ["(a) Nunca", "(b) Às vezes nos fins de semana", "(c) Se cochilar, não durmo à noite"], pts:[1,2,3]},
+        {q: "12. Horário para trabalho físico pesado:", a: ["(a) 8h às 10h", "(b) 11h às 13h", "(c) 18h às 20h"], pts:[1,2,3]},
+        {q: "13. Sobre sua saúde:", a: ["(a) Quase sempre saudável", "(b) De vez em quando", "(c) Tenho dificuldade"], pts:[1,2,3]},
+        {q: "14. Conforto em correr riscos:", a: ["(a) Baixo", "(b) Médio", "(c) Alto"], pts:[1,2,3]},
+        {q: "15. Como se considera:", a: ["(a) Voltado para o futuro", "(b) Moldado pelo passado", "(c) Voltado para o presente"], pts:[1,2,3]},
+        {q: "16. Tipo de estudante:", a: ["(a) Excepcional", "(b) Regular", "(c) Preguiçoso"], pts:[1,2,3]},
+        {q: "17. Estado ao acordar:", a: ["(a) Alerta", "(b) Zonzo", "(c) Entorpecido"], pts:[1,2,3]},
+        {q: "18. Apetite matinal (primeira meia hora):", a: ["(a) Muito faminto", "(b) Com fome", "(c) Sem fome nenhuma"], pts:[1,2,3]},
+        {q: "19. Frequência de insônia:", a: ["(a) Raramente", "(b) Às vezes", "(c) Crônica"], pts:[1,2,3]},
+        {q: "20. Satisfação geral com a vida:", a: ["(a) Alta", "(b) Boa", "(c) Baixa"], pts:[0,2,4]}
+    ];
+
+    const resultsData = {
+        Golfinho: {
+            emoji: "🐬", title: "Golfinho", color: "#008b8b",
+            desc: `Os golfinhos representam cerca de 10% da população e possuem um sono uni-hemisférico, o que se traduz em um sono muito leve.<br><br>
+            <h3>Personalidade</h3>
+            São muito inteligentes, cautelosos, introvertidos e, muitas vezes, neuróticos.<br>
+            <h3>Comportamento</h3>
+            Buscam a perfeição, são fixados em detalhes e evitam situações de risco; costumam trabalhar melhor sozinhos.<br>
+            <h3>Padrão de Sono/Vigília</h3>
+            Acordam sentindo-se pouco revigorados e permanecem cansados até o fim da tarde, quando subitamente ficam alertas. Frequentemente sofrem de insônia relacionada à ansiedade.<br>
+            <h3>Biologia</h3>
+            Possuem o metabolismo rápido e uma fisiologia "invertida": ao contrário dos outros tipos, seu cortisol aumenta à noite e sua pressão arterial sobe no horário de dormir, dificultando o relaxamento.`
+        },
+        Leao: {
+            emoji: "🦁", title: "Leão", color: "#c9a441",
+            desc: `Os leões estão no topo da produtividade matinal, representando cerca de 15% a 20% da população.<br><br>
+            <h3>Personalidade</h3>
+            São estáveis, práticos, otimistas e possuem um forte senso de discernimento.<br>
+            <h3>Comportamento</h3>
+            Tendem a ser empreendedores e líderes natos, focados em objetivos de longo prazo e no planejamento estratégico.<br>
+            <h3>Padrão de Sono/Vigília</h3>
+            Acordam naturalmente alertas antes ou junto com o nascer do sol, sem sofrerem com a inércia do sono. No entanto, sentem cansaço logo no início da noite, sendo geralmente os primeiros a sair de festas.<br>
+            <h3>Biologia</h3>
+            O nível de cortisol sobe muito cedo (entre 3h30 e 4h), o que os impulsiona a estarem famintos e ativos logo ao despertar.`
+        },
+        Urso: {
+            emoji: "🐻", title: "Urso", color: "#8b4513",
+            desc: `O urso é o cronotipo mais comum, abrangendo cerca de 50% da população; por serem a maioria, os horários da sociedade foram baseados no seu ritmo biológico.<br><br>
+            <h3>Personalidade</h3>
+            São amigáveis, extrovertidos, de mente aberta e costumam evitar conflitos.<br>
+            <h3>Comportamento</h3>
+            Funcionam bem em equipe, são equilibrados e priorizam a felicidade e sua zona de conforto.<br>
+            <h3>Padrão de Sono/Vigília</h3>
+            Seguem o ciclo solar; acordam zonzos (precisando do botão de soneca) e sentem a necessidade de pelo menos oito horas de sono. Seu pico de alerta ocorre entre o meio da manhã e o início da tarde.<br>
+            <h3>Biologia</h3>
+            Possuem um alto impulso de sono e tendem a ter um IMC de médio a alto, sendo suscetíveis a lanches noturnos se não seguirem um cronorritmo rigoroso.`
+        },
+        Lobo: {
+            emoji: "🐺", title: "Lobo", color: "#708090",
+            desc: `Os lobos são os "caçadores noturnos" da sociedade, representando cerca de 15% a 20% da população.<br><br>
+            <h3>Personalidade</h3>
+            São criativos, impulsivos e podem ser pessimistas ou apresentar variações de humor.<br>
+            <h3>Comportamento</h3>
+            Gostam de assumir riscos, priorizam o prazer e buscam constantemente por novidades. Frequentemente são vistos como preguiçosos por não funcionarem bem no horário comercial padrão.<br>
+            <h3>Padrão de Sono/Vigília</h3>
+            Têm extrema dificuldade para acordar antes das 9h e sentem-se alertas apenas após o meio-dia, atingindo o pico de produtividade à noite.<br>
+            <h3>Biologia</h3>
+            Têm o lado direito do cérebro dominante (intuitivo) e costumam sentir muita fome após o anoitecer, o que pode elevar o risco de obesidade e diabetes.`
+        }
+    };
+
+    // --- VARIÁVEIS DE ESTADO ---
+    let userName = "";
+    let indice = 0, fase = 1, ptsP1 = 0, ptsP2 = 0;
+
+    // --- FUNÇÕES DE CONTROLE ---
+    function startQuiz() {
+        const nameInput = document.getElementById('user-name');
+        userName = nameInput.value.trim();
+        
+        if (userName === "") {
+            alert("Por favor, digite seu nome para começar.");
+            nameInput.focus();
+            return;
+        }
+
+        document.getElementById('intro-screen').style.display = 'none';
+        document.getElementById('quiz-ui').style.display = 'block';
+        render();
+    }
+
+    function render() {
+        const area = document.getElementById('options-area');
+        const text = document.getElementById('q-text');
+        const fill = document.getElementById('progress-fill');
+        const label = document.getElementById('fase-label');
+
+        if(fase === 1) {
+            label.innerText = `Fase 1: Sensibilidade (${indice + 1}/${perguntasParte1.length})`;
+            text.innerText = perguntasParte1[indice];
+            area.innerHTML = `
+                <button class="btn-option btn-true" onclick="h(1)">Verdadeiro (V)</button>
+                <button class="btn-option btn-false" onclick="h(0)">Falso (F)</button>`;
+            fill.style.width = ((indice + 1) / perguntasParte1.length * 100) + "%";
+        } else {
+            label.innerText = `Fase 2: Ritmo Diário (${indice + 1}/${perguntasParte2.length})`;
+            const q = perguntasParte2[indice];
+            text.innerText = q.q;
+            area.innerHTML = '';
+            q.a.forEach((opt, i) => { 
+                area.innerHTML += `<button class="btn-option" onclick="h(${q.pts[i]})">${opt}</button>`; 
+            });
+            fill.style.width = ((indice + 1) / perguntasParte2.length * 100) + "%";
+        }
+    }
+
+    function h(v) {
+        if(fase === 1) {
+            ptsP1 += v; 
+            indice++;
+            if(indice >= perguntasParte1.length) {
+                // Se >= 7 em fase 1, já é Golfinho direto
+                if(ptsP1 >= 7) f("Golfinho"); 
+                else { 
+                    fase = 2; 
+                    indice = 0; 
+                    render(); 
+                }
+            } else {
+                render();
+            }
+        } else {
+            ptsP2 += v; 
+            indice++;
+            if(indice >= perguntasParte2.length) calc(); 
+            else render();
+        }
+    }
+
+    function calc() {
+        if(ptsP2 >= 19 && ptsP2 <= 32) f("Leao");
+        else if(ptsP2 >= 33 && ptsP2 <= 47) f("Urso");
+        else f("Lobo");
+    }
+
+    function f(type) {
+        document.getElementById('quiz-ui').style.display='none';
+        document.getElementById('results-summary').style.display='block';
+
+        const d = resultsData[type];
+        
+        
+        const descColorida = d.desc.replaceAll('<h3>', `<h3 style="color: ${d.color}; border-bottom-color: ${d.color}">`);
+
+       
+        document.getElementById('greeting-area').innerHTML = `Olá <span style="color: var(--accent)">${userName}</span>, o seu Cronotipo é o <span style="color:${d.color}">${d.title}</span>`;
+
+     
+        const statsArea = document.getElementById('stats-area');
+        statsArea.innerHTML = '';
+        
+        let stats = (type === "Golfinho") 
+            ? [{t:"Golfinho",p:98},{t:"Lobo",p:35},{t:"Urso",p:18},{t:"Leão",p:12}]
+            : [
+                {t:"Leão", p:Math.max(10,100-Math.abs(ptsP2-25)*4.5)},
+                {t:"Urso", p:Math.max(10,100-Math.abs(ptsP2-40)*4.5)},
+                {t:"Lobo", p:Math.max(10,100-Math.abs(ptsP2-55)*4.5)},
+                {t:"Golfinho", p:(ptsP1/10)*100}
+            ];
+            
+        stats.sort((a,b) => b.p - a.p);
+
+        stats.forEach(s => {
+            const key = s.t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").split(' ')[0];
+            const color = resultsData[key].color;
+            
+            statsArea.innerHTML += `
+                <div class="animal-bar-container">
+                    <div class="animal-header">
+                        <span>${s.t}</span><span>${Math.round(s.p)}%</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill" style="width:${s.p}%; background:${color}"></div>
+                    </div>
+                </div>`;
+        });
+
+       
+        const mainContent = document.getElementById('main-result-content');
+        mainContent.innerHTML = `
+            <span class="animal-emoji-big">${d.emoji}</span>
+            <div class="detail-title" style="color: ${d.color}">${d.title}</div>
+            <div class="detail-text">
+                ${descColorida}
+            </div>
+        `;
+
+       
+        const printContainer = document.getElementById('print-only-container');
+        printContainer.innerHTML = `
+            <div class="print-detail-block">
+                <span style="font-size:3rem;">${d.emoji}</span>
+                <div class="print-title" style="color:${d.color}">${d.title}</div>
+                <div class="print-text">
+                    ${descColorida}
+                </div>
+            </div>
+            <div style="margin-top:30px; border-top:1px dashed #ccc; padding-top:20px;">
+                <strong>Resumo das Potencialidades:</strong>
+                <p>O resultado acima é baseado nas suas respostas de sensibilidade e ritmo diário. Embora o ${d.title} seja predominante, você carrega traços dos outros cronotipos conforme as porcentagens indicadas no gráfico lateral.</p>
+            </div>
+        `;
+    }
+
+</script>
+</body>
+</html>
