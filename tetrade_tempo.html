@@ -40,14 +40,77 @@
         -moz-transform-origin: top center;
     }
 
+    /* --- TELA DE SENHA --- */
+    #password-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .password-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: var(--card-shadow);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+    }
+
+    .password-input {
+        width: 100%;
+        padding: 15px;
+        margin: 20px 0;
+        font-size: 1.2rem;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        text-align: center;
+    }
+    
+    .password-input:focus {
+        border-color: var(--accent);
+        outline: none;
+    }
+
+    .btn-unlock {
+        background: var(--accent);
+        color: white;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.3s;
+        width: 100%;
+    }
+
+    .btn-unlock:hover { background: #732d91; }
+
+    .error-msg {
+        color: var(--traffic-red);
+        font-weight: 600;
+        margin-top: 10px;
+        display: none;
+    }
+
+    /* Oculta o quiz inicialmente */
     #quiz-container {
+        display: none; /* Só aparece após a senha */
         width: 100%;
         max-width: 1300px;
         background: #ffffff;
         padding: 40px 60px;
         border-radius: 32px;
         box-shadow: var(--card-shadow);
-        display: flex;
         flex-direction: column;
     }
 
@@ -254,6 +317,10 @@
             -moz-transform: none !important;
         }
 
+        /* Esconde tela de senha na impressão caso algo dê errado */
+        #password-screen { display: none !important; }
+        #quiz-container { display: block !important; } /* Garante que o quiz apareça se for impresso */
+
         #quiz-container, .res-grid { 
             display: block !important; 
             width: 100% !important; 
@@ -363,6 +430,18 @@
 </head>
 <body>
 
+<div id="password-screen">
+    <div class="password-card">
+        <div class="brand-header">
+            <h1 style="font-size: 1.5rem;">Acesso Restrito</h1>
+            <span class="brand-subtitle" style="font-size: 0.9rem;">Matriz Tétrade do Tempo</span>
+        </div>
+        <input type="password" id="input-pass" class="password-input" placeholder="Digite a senha de acesso" onkeyup="if(event.key === 'Enter') verifyPassword()">
+        <button class="btn-unlock" onclick="verifyPassword()">ENTRAR</button>
+        <div id="error-msg" class="error-msg">Senha incorreta. Tente novamente.</div>
+    </div>
+</div>
+
 <div id="quiz-container">
     <div class="header-section">
         <img src="logo.jpeg" alt="Daniela Theodoro" class="logo-img" onerror="this.style.display='none'">
@@ -450,6 +529,33 @@
 </div>
 
 <script>
+    
+    const SENHA_HASH = "da44c811a2737e1fc45c65dfc53b50f07d3353dfcd8aca7de7b47fbcd2486209";
+
+    async function verifyPassword() {
+        const input = document.getElementById('input-pass');
+        const errorMsg = document.getElementById('error-msg');
+        const typedPassword = input.value;
+
+        // Gera o hash do que foi digitado
+        const msgBuffer = new TextEncoder().encode(typedPassword);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        // Compara
+        if (hashHex === SENHA_HASH) {
+            // Se a senha estiver correta:
+            document.getElementById('password-screen').style.display = 'none'; // Esconde bloqueio
+            document.getElementById('quiz-container').style.display = 'flex'; // Mostra quiz
+        } else {
+            // Se a senha estiver errada:
+            errorMsg.style.display = 'block';
+            input.value = ''; // Limpa o campo
+            input.focus();
+        }
+    }
+
     // --- VARIÁVEL GLOBAL PARA O NOME ---
     let userName = "";
 

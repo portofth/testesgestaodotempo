@@ -46,6 +46,58 @@
         -moz-transform-origin: top center;
     }
 
+    /* --- TELA DE SENHA --- */
+    #password-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-color: var(--bg);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .pass-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: var(--card-shadow);
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .pass-input {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.2rem;
+        border: 2px solid #ddd;
+        border-radius: 12px;
+        margin: 20px 0;
+        text-align: center;
+        outline: none;
+        transition: 0.3s;
+    }
+    .pass-input:focus { border-color: var(--accent); }
+
+    .pass-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: 800;
+        border-radius: 50px;
+        cursor: pointer;
+        width: 100%;
+        transition: 0.3s;
+    }
+    .pass-btn:hover { transform: scale(1.02); background: #732d91; }
+
+    
     #quiz-container {
         width: 100%;
         max-width: 1300px;
@@ -53,7 +105,7 @@
         padding: 40px 60px;
         border-radius: 32px;
         box-shadow: var(--card-shadow);
-        display: flex;
+        display: none; /*Começa invisível */
         flex-direction: column;
     }
 
@@ -211,6 +263,8 @@
             zoom: 1 !important; -moz-transform: none !important;
         }
 
+        #password-overlay { display: none !important; }
+
         #quiz-container, .res-grid { 
             display: block !important; width: 100% !important; border: none !important; 
             box-shadow: none !important; padding: 0 !important; margin: 0 !important; overflow: visible !important;
@@ -248,6 +302,18 @@
     </style>
 </head>
 <body>
+
+<div id="password-overlay">
+    <div class="pass-card">
+        <div class="brand-header">
+            <h1 style="font-size: 1.5rem;">Acesso Restrito</h1>
+            <span class="brand-subtitle" style="font-size: 0.9rem;">Teste de Cronotipo</span>
+        </div>
+        <input type="password" id="password-input" class="pass-input" placeholder="Digite a senha de acesso" onkeyup="if(event.key === 'Enter') verifyPassword()">
+        <button class="pass-btn" onclick="verifyPassword()">ENTRAR</button>
+        <div id="error-msg" style="color: var(--false-red); margin-top: 10px; display: none; font-weight: 700;">Senha incorreta.</div>
+    </div>
+</div>
 
 <div id="quiz-container">
     <div class="header-section">
@@ -320,6 +386,31 @@
 </div>
 
 <script>
+    
+    
+    const SENHA_HASH = "da44c811a2737e1fc45c65dfc53b50f07d3353dfcd8aca7de7b47fbcd2486209";
+
+    async function verifyPassword() {
+        const input = document.getElementById('password-input');
+        const errorMsg = document.getElementById('error-msg');
+        const typedPassword = input.value;
+
+        
+        const msgBuffer = new TextEncoder().encode(typedPassword);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        if (hashHex === SENHA_HASH) {
+            document.getElementById('password-overlay').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'flex';
+        } else {
+            errorMsg.style.display = 'block';
+            input.value = '';
+            input.focus();
+        }
+    }
+
     // --- DADOS DO TESTE ---
     const perguntasParte1 = [
         "1. Qualquer barulho ou luz me acorda ou me impede de dormir.",
